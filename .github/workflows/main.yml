@@ -50,7 +50,10 @@ jobs:
           Add-LocalGroupMember -Group "Administrators" -Member "RDP"
           Add-LocalGroupMember -Group "Remote Desktop Users" -Member "RDP"
           
-          echo "RDP_CREDS=User: RDP | Password: $password" >> $env:GITHUB_ENV
+          $credsString = "User: RDP | Password: $password"
+          echo "RDP_CREDS=$credsString" >> $env:GITHUB_ENV
+          echo "## RDP Credentials" >> $env:GITHUB_STEP_SUMMARY
+          echo "$credsString" >> $env:GITHUB_STEP_SUMMARY
           
           if (-not (Get-LocalUser -Name "RDP")) {
               Write-Error "User creation failed"
@@ -85,6 +88,8 @@ jobs:
               exit 1
           }
           echo "TAILSCALE_IP=$tsIP" >> $env:GITHUB_ENV
+          echo "## Tailscale IP" >> $env:GITHUB_STEP_SUMMARY
+          echo "$tsIP" >> $env:GITHUB_STEP_SUMMARY
       
       - name: Verify RDP Accessibility
         run: |
